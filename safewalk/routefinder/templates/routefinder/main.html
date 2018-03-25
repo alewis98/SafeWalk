@@ -42,171 +42,249 @@
 
 <body>
   <div id="floating-panel">
-      <button onclick="requestHelp()">Request help from SafeTrek</button>
-
-    </div>
-
+    <button onclick="requestHelp()">Where would you like to go?</button>
+    <p id="latitude">{{ lat }}</p>
+    <p id="longitude">{{ long }}</p>
+  </div>
+  
   <div id="map"></div>
   <script>
 
     function requestHelp() {
 
-  }
 
-  // This example requires the Visualization library. Include the libraries=visualization
-  // parameter when you first load the API. For example:
-  // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=visualization">
+    }
 
-  var map, heatmap;
+    // This example requires the Visualization library. Include the libraries=visualization
+    // parameter when you first load the API. For example:
+    // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=visualization">
 
-
-  function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 13,
-      center: {lat: 41.85, lng: -87.6298},
-      mapTypeId: 'roadmap'
-    });
-
-    heatmap = new google.maps.visualization.HeatmapLayer({
-      data: getPoints(),
-      map: map
-    });
+      var map, heatmap;
 
 
+      function initMap() {
 
-    var chicago = {lat: 41.85, lng: -87.65};
-    var indianapolis = {lat: 41.89, lng: -87.74};
-    var directionsDisplay = new google.maps.DirectionsRenderer({
-      map: map
-    });
-
-    var request = {
-      destination: indianapolis,
-      origin: chicago,
-      travelMode: 'WALKING',
-      provideRouteAlternatives: true
-    };
-
-    var directionsService = new google.maps.DirectionsService();
-    directionsService.route(request, function(response, status) {
-      if (status == 'OK') {
-        // Display the route on the map.
-        try {
-          var polycolour = "";
-          var Opacity = 0;
-          //var PolyLine = '';
-          for (var i = 0, len = 1; i < len; i++) {
-            if (i == 0) {
-              polycolour = "Blue";
-              Opacity = 5;
-            }
-
-            directionsDisplay = new google.maps.DirectionsRenderer({
-              map: map,
-              directions: response,
-              routeIndex: 0,
-              draggable : true,
-              polylineOptions: {
-                strokeColor: polycolour,
-                strokeWeight: Opacity
-              }
-            });
-
-            var infowindow2 = new google.maps.InfoWindow();
-            //var step = 10;
-            //alert(angular.toJson(response.routes[0].legs[0].steps[i]));
-
-
-
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 13,
+          center: {lat: 41.85, lng: -87.6298},
+          styles: [
+          {elementType: 'geometry', stylers: [{color: '#242f3e'}]},
+          {elementType: 'labels.text.stroke', stylers: [{color: '#242f3e'}]},
+          {elementType: 'labels.text.fill', stylers: [{color: '#746855'}]},
+          {
+            featureType: 'administrative.locality',
+            elementType: 'labels.text.fill',
+            stylers: [{color: '#d59563'}]
+          },
+          {
+            featureType: 'poi',
+            elementType: 'labels.text.fill',
+            stylers: [{color: '#d59563'}]
+          },
+          {
+            featureType: 'poi.park',
+            elementType: 'geometry',
+            stylers: [{color: '#263c3f'}]
+          },
+          {
+            featureType: 'poi.park',
+            elementType: 'labels.text.fill',
+            stylers: [{color: '#6b9a76'}]
+          },
+          {
+            featureType: 'road',
+            elementType: 'geometry',
+            stylers: [{color: '#38414e'}]
+          },
+          {
+            featureType: 'road',
+            elementType: 'geometry.stroke',
+            stylers: [{color: '#212a37'}]
+          },
+          {
+            featureType: 'road',
+            elementType: 'labels.text.fill',
+            stylers: [{color: '#9ca5b3'}]
+          },
+          {
+            featureType: 'road.highway',
+            elementType: 'geometry',
+            stylers: [{color: '#746855'}]
+          },
+          {
+            featureType: 'road.highway',
+            elementType: 'geometry.stroke',
+            stylers: [{color: '#1f2835'}]
+          },
+          {
+            featureType: 'road.highway',
+            elementType: 'labels.text.fill',
+            stylers: [{color: '#f3d19c'}]
+          },
+          {
+            featureType: 'transit',
+            elementType: 'geometry',
+            stylers: [{color: '#2f3948'}]
+          },
+          {
+            featureType: 'transit.station',
+            elementType: 'labels.text.fill',
+            stylers: [{color: '#d59563'}]
+          },
+          {
+            featureType: 'water',
+            elementType: 'geometry',
+            stylers: [{color: '#17263c'}]
+          },
+          {
+            featureType: 'water',
+            elementType: 'labels.text.fill',
+            stylers: [{color: '#515c6d'}]
+          },
+          {
+            featureType: 'water',
+            elementType: 'labels.text.stroke',
+            stylers: [{color: '#17263c'}]
           }
-          //directionsDisplay.setMap(map);
-          google.maps.event.addListener(directionsDisplay, 'click', function(){
-            alert("helo");
-          });
-          //for (var k = 0, len = response.routes.length; k < len; k++) {
-          //var myRoute = response.routes[k].legs[0];
-          //for (var i = 0; i < myRoute.steps.length; i++) {
-          //for (var j = 0; j < myRoute.steps[i].lat_lngs.length; j++) {
-          // points.push(myRoute.steps[i].lat_lngs[j]);
-          //}
-          //}
-
-          //var routLine = new google.maps.Polyline(
-          //{
-          //path: points,
-          //strokeColor: "Red",
-          //strokeOpacity: 0.5,
-          // strokeWeight: 10
-          // }
-          // );
-          // }
-          // routLine.setMap(map)
-
-          // Add a listener for the rightclick event on the routLine
-          //google.maps.event.addListener(routLine, 'click', function(e){
-          //try {
-          //alert(angular.toJson(e));
-          //}
-          //catch (err)
-          //{
-          //  alert(err);
-          //}
-          // });
-
-          //alert(angular.toJson(response.routes[0].legs[0].steps));
-          //google.maps.event.addListener(PolyLine, 'routeindex_changed', function() {
-          //alert("Bingo");
-          //computeTotalDistance(directionsDisplay.getRouteIndex());
-          //});
-          //alert(response.routes.length);
-          //directionsDisplay.setDirections(response);
-        }
-        catch (err)
-        {
-          alert(err);
-        }
-      }
-    });
+          ]
+        });
 
 
+        heatmap = new google.maps.visualization.HeatmapLayer({
+          data: getPoints(),
+          radius: 7.5,
+          map: map
+        });
 
 
-  }
+        var chicago = {lat: {{ lat }} , lng: {{ long }} };
+        var indianapolis = {lat: 41.89, lng: -87.74};
+        var directionsDisplay = new google.maps.DirectionsRenderer({
+          map: map
+        });
 
-  function toggleHeatmap() {
-    heatmap.setMap(heatmap.getMap() ? null : map);
-  }
+        var request = {
+          destination: indianapolis,
+          origin: chicago,
+          travelMode: 'WALKING',
+          provideRouteAlternatives: true
+        };
+
+        var directionsService = new google.maps.DirectionsService();
+        directionsService.route(request, function(response, status) {
+          if (status == 'OK') {
+            // Display the route on the map.
+            try {
+              var polycolour = "";
+              var Opacity = 0;
+              //var PolyLine = '';
+              for (var i = 0, len = 1; i < len; i++) {
+                if (i == 0) {
+                  polycolour = "salmon";
+                  Opacity = 5;
+                }
+
+                directionsDisplay = new google.maps.DirectionsRenderer({
+                  map: map,
+                  directions: response,
+                  routeIndex: 0,
+                  draggable : true,
+                  polylineOptions: {
+                    strokeColor: polycolour,
+                    strokeWeight: Opacity
+                  }
+                });
+
+                var infowindow2 = new google.maps.InfoWindow();
+                //var step = 10;
+                //alert(angular.toJson(response.routes[0].legs[0].steps[i]));
 
 
 
+              }
+              //directionsDisplay.setMap(map);
+              google.maps.event.addListener(directionsDisplay, 'click', function(){
+                alert("helo");
+              });
+              //for (var k = 0, len = response.routes.length; k < len; k++) {
+                //var myRoute = response.routes[k].legs[0];
+                //for (var i = 0; i < myRoute.steps.length; i++) {
+                  //for (var j = 0; j < myRoute.steps[i].lat_lngs.length; j++) {
+                    // points.push(myRoute.steps[i].lat_lngs[j]);
+                    //}
+                    //}
 
-  function changeGradient() {
-    var gradient = [
-      'rgba(255, 255, 255, 255)',
-      'rgba(255, 255, 255, 1)',
-      'rgba(255, 255, 255, 251)',
-      'rgba(255, 255, 255, 21)',
-      'rgba(255, 255, 255, 21)',
-      'rgba(255, 255, 255, 21)',
-      'rgba(255, 255, 255, 21)',
-      'rgba(255, 255, 255, 21)',
-      'rgba(255, 255, 255, 21)',
-      'rgba(255, 255, 255, 21)',
-      'rgba(255, 255, 255, 21)',
-      'rgba(255, 255, 255, 21)',
-      'rgba(255, 255, 255, 21)',
-      'rgba(255, 255, 255, 21)'
-    ]
-    heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
-  }
+                    //var routLine = new google.maps.Polyline(
+                    //{
+                      //path: points,
+                      //strokeColor: "Red",
+                      //strokeOpacity: 0.5,
+                      // strokeWeight: 10
+                      // }
+                      // );
+                      // }
+                      // routLine.setMap(map)
 
-  function changeRadius() {
-    heatmap.set('radius', heatmap.get('radius') ? null : 6000000);
-  }
+                      // Add a listener for the rightclick event on the routLine
+                      //google.maps.event.addListener(routLine, 'click', function(e){
+                        //try {
+                          //alert(angular.toJson(e));
+                          //}
+                          //catch (err)
+                          //{
+                            //  alert(err);
+                            //}
+                            // });
 
-  function changeOpacity() {
-    heatmap.set('opacity', heatmap.get('opacity') ? null : 180);
-  }
+                            //alert(angular.toJson(response.routes[0].legs[0].steps));
+                            //google.maps.event.addListener(PolyLine, 'routeindex_changed', function() {
+                              //alert("Bingo");
+                              //computeTotalDistance(directionsDisplay.getRouteIndex());
+                              //});
+                              //alert(response.routes.length);
+                              //directionsDisplay.setDirections(response);
+                            }
+                            catch (err)
+                            {
+                              alert(err);
+                            }
+                          }
+                        });
+
+
+
+
+                      }
+
+                      function toggleHeatmap() {
+                        heatmap.setMap(heatmap.getMap() ? null : map);
+                      }
+
+
+
+
+                      function changeGradient() {
+                        ["rgba(102, 255, 0, 0)",
+                        "rgba(102, 255, 0, 1)",
+                        "rgba(147, 255, 0, 1)",
+                        "rgba(193, 255, 0, 1)",
+                        "rgba(238, 255, 0, 1)",
+                        "rgba(244, 227, 0, 1)",
+                        "rgba(249, 198, 0, 1)",
+                        "rgba(255, 170, 0, 1)",
+                        "rgba(255, 113, 0, 1)",
+                        "rgba(255, 57, 0, 1)",
+                        "rgba(255, 0, 0, 1)"]
+                        heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
+                      }
+
+                      function changeRadius() {
+                        heatmap.set('radius', heatmap.get('radius') ? null : 6000000);
+                      }
+
+                      function changeOpacity() {
+                        heatmap.set('opacity', heatmap.get('opacity') ? null : 180);
+                      }
 
 
   // Heatmap data: 500 Points

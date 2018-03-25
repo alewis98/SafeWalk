@@ -6,11 +6,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from .forms import NameForm
 
 
-def index(request):
+def login(request):
     nums = [1,2,3,4,5]
     name = 'Andrew Lewis'
     args = {'name': name, 'numbers': nums}
-    return render(request, 'routefinder/login.html', args)
+    return render(request, 'routefinder/login.html')
 
 
 def get_name(request):
@@ -21,7 +21,12 @@ def get_name(request):
         
         if form.is_valid():
 
-            return HttpResponseRedirect('/thanks/')
+            person = form.cleaned_data
+            lat = float(person["your_name"].strip().split(" ")[0])
+            long = float(person["your_name"].strip().split(" ")[1])
+            args = {'lat': lat, 'long': long}
+
+            return render(request, 'routefinder/main.html', args)
 
     else: 
         form = NameForm()
